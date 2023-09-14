@@ -1,7 +1,7 @@
+.ideag
 node_modules
 .coverage
 .DS_Store
 .vscode
 yarn-error.log
 /dist
-lib/

@@ -20,7 +20,7 @@ function getBackgroundColor(zoom: ZoomConfig) {
     : zoom.background?.light || 'rgb(255, 255, 255)';
 }
 
-export default (function () {
+export default (function() {
   if (typeof window === 'undefined') {
     return null;
   }
@@ -34,22 +34,32 @@ export default (function () {
     return null;
   }
 
-  config.background = getBackgroundColor(zoom);
-
-  var observer = new MutationObserver(function () {
-    if (!zoomObject) {
-      return;
+  const observer = new MutationObserver(() => {
+    const background = getBackgroundColor(zoom);
+    config['background'] = background;
+    if (zoomObject) {
+      zoomObject.update({ background });
     }
-
-    zoomObject.update({ background: getBackgroundColor(zoom) });
   });
 
   const htmlNode = document.querySelector('html');
 
   observer.observe(htmlNode!, {
     attributes: true,
-    attributeFilter: ['data-theme'],
+    attributeFilter: ['data-theme']
   });
+
+  const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      if (entry.contentRect.width < 1000) {
+        zoomObject.update({ margin: config ? 6 : 0 });
+      } else {
+        zoomObject.update({ margin: config['margin'] ?? 0 });
+      }
+    }
+  });
+
+  resizeObserver.observe(htmlNode);
 
   setTimeout(() => {
     if (zoomObject) {
@@ -68,6 +78,6 @@ export default (function () {
 
         zoomObject = mediumZoom(selector, config);
       }, 1000);
-    },
+    }
   };
 })();
