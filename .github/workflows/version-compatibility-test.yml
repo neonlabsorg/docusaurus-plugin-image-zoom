@@ -7,7 +7,7 @@ on:
 
 jobs:
   compatibility-setup:
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "k8s-prod"]
     outputs:
       docusaurus-versions: ${{ steps.set-matrix.outputs.docusaurus-versions }}
     steps:
@@ -18,7 +18,7 @@ jobs:
           setup-versions: true
 
   compatibility-test:
-    runs-on: ubuntu-latest
+    runs-on: ["self-hosted", "k8s-prod"]
     name: Docusaurus @${{ matrix.docusaurus-version }}
 
     needs: compatibility-setup
